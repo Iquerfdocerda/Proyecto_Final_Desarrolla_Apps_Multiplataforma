@@ -1,0 +1,66 @@
+body {
+    background-color: #141414;
+    color: white;
+    font-family: Arial, sans-serif;
+    margin: 0;
+}
+
+header {
+    background-color: rgba(0,0,0,0.9);
+    padding: 20px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    color: #e50914;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.search-box input {
+    background: #000;
+    border: 1px solid white;
+    color: white;
+    padding: 8px;
+}
+
+.catalogo {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 40px;
+}
+
+.pelicula-card {
+    position: relative;
+    transition: transform 0.3s;
+    cursor: pointer;
+}
+
+.pelicula-card:hover {
+    transform: scale(1.1);
+    z-index: 10;
+}
+
+.pelicula-card img {
+    width: 100%;
+    border-radius: 4px;
+}
+
+.info {
+    background: rgba(0,0,0,0.8);
+    padding: 10px;
+    font-size: 12px;
+    display: none; 
+}
+
+.pelicula-card:hover .info {
+    display: block; 
+}
+
+.genero { color: #46d369; font-weight: bold; }
