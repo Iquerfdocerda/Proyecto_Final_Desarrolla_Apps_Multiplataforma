@@ -1,0 +1,54 @@
+/* ============================================================
+   menu_style.css — Estilos adicionales para menu.php
+   BUG CORREGIDO: Este archivo existía pero nunca se importaba.
+   Ahora menu.php lo incluye con <link rel="stylesheet">.
+   Los estilos principales siguen en el <style> interno de
+   menu.php, este archivo puede usarse para personalizaciones
+   o temas alternativos.
+   ============================================================ */
+
+/* Scrollbar personalizado para navegadores Webkit (Chrome, Edge) */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #141414;
+}
+::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #E50914;
+}
+
+/* Animación de entrada para las tarjetas */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.pelicula-card {
+    animation: fadeInUp 0.35s ease both;
+}
+
+/* Delay escalonado para las primeras 12 tarjetas
+   Crea un efecto visual donde las tarjetas aparecen una tras otra */
+.pelicula-card:nth-child(1)  { animation-delay: 0.05s; }
+.pelicula-card:nth-child(2)  { animation-delay: 0.10s; }
+.pelicula-card:nth-child(3)  { animation-delay: 0.15s; }
+.pelicula-card:nth-child(4)  { animation-delay: 0.20s; }
+.pelicula-card:nth-child(5)  { animation-delay: 0.25s; }
+.pelicula-card:nth-child(6)  { animation-delay: 0.30s; }
+.pelicula-card:nth-child(7)  { animation-delay: 0.35s; }
+.pelicula-card:nth-child(8)  { animation-delay: 0.40s; }
+.pelicula-card:nth-child(9)  { animation-delay: 0.45s; }
+.pelicula-card:nth-child(10) { animation-delay: 0.50s; }
+.pelicula-card:nth-child(11) { animation-delay: 0.55s; }
+.pelicula-card:nth-child(12) { animation-delay: 0.60s; }
