@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $resultado  = $stmt->get_result();
     $usuario_bd = $resultado->fetch_assoc(); // Trae la fila como array asociativo
 
-    // Verificamos que el usurio exita y la contraseña coincida
+    // Verificamos que el usurio exista y la contraseña coincida
     if ($usuario_bd && password_verify($pass_ingresada, $usuario_bd['password'])) {
 
         // Se guardan los datos del usuario en la sesión.
