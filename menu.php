@@ -1,42 +1,30 @@
 <?php
-// ============================================================
-// menu.php — Catálogo principal + CRUD de películas
-// ============================================================
-
+// menu.php: Catálogo principal + CRUD de películas
 session_start();
 include('conexion.php');
 
-// ── SEGURIDAD: Si no hay sesión activa, mandamos al login ────
-// isset() verifica si la variable existe y no es null.
-// Si el usuario no ha iniciado sesión, no tiene usuario_id en la sesión.
+// Si no hay una sesion activa se redirige al login
 if (!isset($_SESSION['usuario_id'])) {
     header("Location: index.html");
     exit();
 }
 
-// ============================================================
-// CRUD — Procesamos las acciones ANTES de mostrar el HTML
-// Así cuando la página se recarga, ya tiene los datos actualizados.
-// ============================================================
+$mensaje = ''; // Variable para mostrar mensajes de éxito o error al usuario
 
-$mensaje = ''; // Variable para mostrar mensajes de éxito/error al usuario
-
-// ── CREATE: Insertar nueva película ─────────────────────────
-// Esto se ejecuta cuando el usuario envía el formulario de "Agregar".
+//CREATE: Insertar nueva película o serie
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'crear') {
 
     $titulo      = trim($_POST['titulo']);       // trim() quita espacios al inicio y al final
     $descripcion = trim($_POST['descripcion']);
     $genero      = trim($_POST['genero']);
-    $anio        = intval($_POST['anio']);       // intval() convierte a número entero, evita datos raros
+    $anio        = intval($_POST['anio']);       // intval() convierte a número entero y evita datos raros
     $portada     = trim($_POST['portada']);
 
-    // Si no pusieron URL de portada, usamos el placeholder de la carpeta img/
+    // Si no se puso una URL de imagen de portada, se pone automaticamente el placeholder de la carpeta img/
     if ($portada === '') {
         $portada = 'img/placeholder.png';
     }
 
-    // Prepared statement para INSERT (mismo principio que en register_process.php)
     $stmt = $conexion->prepare(
         "INSERT INTO peliculas (titulo, descripcion, genero, anio, portada)
          VALUES (?, ?, ?, ?, ?)"
@@ -69,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['
         "UPDATE peliculas SET titulo=?, descripcion=?, genero=?, anio=?, portada=?
          WHERE id=?"
     );
-    // El último parámetro es el id (integer), por eso "sssisi"
+    
     $stmt->bind_param("sssisi", $titulo, $descripcion, $genero, $anio, $portada, $id);
 
     if ($stmt->execute()) {
@@ -95,25 +83,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['
     }
 }
 
-// ── READ + BÚSQUEDA: Traer películas de la BD ────────────────
-// Esto siempre se ejecuta, con o sin búsqueda.
+// Para buscar peliculas en la BD
 $busqueda = isset($_GET['buscar']) ? trim($_GET['buscar']) : '';
 
 if ($busqueda !== '') {
-    // Búsqueda: usamos LIKE '%texto%' para buscar coincidencias parciales.
-    // Ej: buscar "dark" encuentra "Dark", "Darkness", etc.
+    // Para buscar se usa LIKE '%texto%' para buscar coincidencias parciales.
     $stmt = $conexion->prepare("SELECT * FROM peliculas WHERE titulo LIKE ? ORDER BY id DESC");
     $termino = "%{$busqueda}%";
     $stmt->bind_param("s", $termino);
     $stmt->execute();
     $resultado = $stmt->get_result();
 } else {
-    // Sin búsqueda: traemos todas, las más nuevas primero
+    // Si no hay busquedas aparecen todas y las mas recientes primero
     $resultado = mysqli_query($conexion, "SELECT * FROM peliculas ORDER BY id DESC");
 }
 
-// Si el usuario quiere EDITAR, cargamos los datos de esa película
-// para pre-llenar el formulario de edición.
+// Si se quiere editar cargamos los datos de esa película
 $pelicula_editar = null;
 if (isset($_GET['editar_id'])) {
     $editar_id = intval($_GET['editar_id']);
@@ -131,7 +116,6 @@ if (isset($_GET['editar_id'])) {
     <title>Netflix - Catálogo</title>
 
     <style>
-        /* ── RESET Y BASE ──────────────────────────────────── */
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
@@ -179,7 +163,7 @@ if (isset($_GET['editar_id'])) {
         .usuario a { color: #aaa; text-decoration: none; }
         .usuario a:hover { color: white; }
 
-        /* ── BOTÓN AGREGAR ─────────────────────────────────── */
+        /* BOTÓN AGREGAR */
         .btn-agregar {
             background: #E50914; color: white; border: none;
             padding: 10px 20px; border-radius: 4px; cursor: pointer;
@@ -187,7 +171,7 @@ if (isset($_GET['editar_id'])) {
         }
         .btn-agregar:hover { background: #b9090b; }
 
-        /* ── MENSAJE DE ÉXITO/ERROR ────────────────────────── */
+        /* MENSAJE DE ÉXITO/ERROR */
         .mensaje {
             text-align: center;
             padding: 12px 20px;
@@ -198,25 +182,18 @@ if (isset($_GET['editar_id'])) {
             border-left: 4px solid #46d369;
         }
         .mensaje.error { background: #3a1a1a; border-left-color: #E50914; }
-
-        /* ── MODAL (ventana flotante para formularios CRUD) ── */
-        /*
-         * El modal es un div que normalmente está oculto (display:none).
-         * Cuando el usuario hace clic en "Agregar" o "Editar",
-         * JavaScript le cambia el display a "flex" y aparece encima.
-         * El fondo oscuro semitransparente es .modal-overlay.
-         */
+        
         .modal-overlay {
-            display: none;  /* Oculto por default */
+            display: none; 
             position: fixed;
-            inset: 0;       /* Equivale a top:0; right:0; bottom:0; left:0 */
+            inset: 0;   
             background: rgba(0,0,0,0.85);
             z-index: 2000;
             justify-content: center;
             align-items: center;
         }
 
-        .modal-overlay.activo { display: flex; } /* JS agrega esta clase para mostrarlo */
+        .modal-overlay.activo { display: flex; } 
 
         .modal {
             background: #1a1a1a;
@@ -271,7 +248,7 @@ if (isset($_GET['editar_id'])) {
         }
         .btn-cerrar:hover { color: white; }
 
-        /* ── SECCIÓN DE ENCABEZADO DEL CATÁLOGO ───────────── */
+        /* SECCIÓN DE ENCABEZADO DEL CATÁLOGO */
         .catalogo-header {
             display: flex;
             justify-content: space-between;
@@ -281,11 +258,9 @@ if (isset($_GET['editar_id'])) {
 
         .catalogo-header h2 { font-size: 20px; color: #ccc; }
 
-        /* ── GRID DE TARJETAS ──────────────────────────────── */
+        /* GRID DE TARJETAS */
         .contenedor-peliculas {
             display: grid;
-            /* auto-fit: crea tantas columnas como quepan */
-            /* minmax(180px, 1fr): cada columna mide entre 180px y el espacio disponible */
             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             gap: 18px;
             padding: 20px 40px 60px;
@@ -308,7 +283,7 @@ if (isset($_GET['editar_id'])) {
 
         .pelicula-card img {
             width: 100%;
-            aspect-ratio: 2 / 3;   /* Proporción tipo póster de cine */
+            aspect-ratio: 2 / 3; 
             object-fit: cover;
             display: block;
             background: #2a2a2a;
@@ -324,12 +299,7 @@ if (isset($_GET['editar_id'])) {
 
         .info .anio   { font-size: 0.75rem; color: #888; }
 
-        /* ── BOTONES CRUD SOBRE LA TARJETA ─────────────────── */
-        /*
-         * Los botones Editar/Eliminar se muestran al hacer hover sobre la tarjeta.
-         * Están en .crud-btns que tiene position:absolute y opacity:0.
-         * Al hacer hover en .pelicula-card, el opacity cambia a 1.
-         */
+        /* BOTONES CRUD SOBRE LA TARJETA */
         .crud-btns {
             position: absolute;
             top: 8px;
@@ -359,7 +329,7 @@ if (isset($_GET['editar_id'])) {
         .btn-eliminar { background: rgba(229,9,20,0.9); color: white; }
         .btn-eliminar:hover { background: #E50914; }
 
-        /* ── SIN RESULTADOS ────────────────────────────────── */
+        /* SIN RESULTADOS */
         .sin-resultados {
             grid-column: 1 / -1; /* Ocupa todo el ancho del grid */
             text-align: center;
@@ -368,7 +338,7 @@ if (isset($_GET['editar_id'])) {
             font-size: 18px;
         }
 
-        /* ── PREVIEW DE PORTADA EN EL MODAL ─────────────────── */
+        /* PREVIEW DE PORTADA EN EL MODAL */
         #preview-portada {
             margin-top: 10px;
             width: 80px;
@@ -382,7 +352,7 @@ if (isset($_GET['editar_id'])) {
 </head>
 <body>
 
-<!-- ── HEADER ───────────────────────────────────────────── -->
+<! HEADER >
 <header class="header">
     <div class="logo">NETFLIX</div>
 
@@ -400,14 +370,14 @@ if (isset($_GET['editar_id'])) {
     </div>
 </header>
 
-<!-- ── MENSAJE DE OPERACIÓN ─────────────────────────────── -->
+<! MENSAJE DE OPERACIÓN >
 <?php if ($mensaje): ?>
     <div class="mensaje <?php echo str_starts_with($mensaje, '❌') ? 'error' : ''; ?>">
         <?php echo $mensaje; ?>
     </div>
 <?php endif; ?>
 
-<!-- ── ENCABEZADO DEL CATÁLOGO ──────────────────────────── -->
+<! ENCABEZADO DEL CATÁLOGO >
 <div class="catalogo-header">
     <h2>
         <?php if ($busqueda): ?>
@@ -422,16 +392,13 @@ if (isset($_GET['editar_id'])) {
     <button class="btn-agregar" onclick="abrirModalCrear()">+ Agregar título</button>
 </div>
 
-<!-- ── GRID DE PELÍCULAS ─────────────────────────────────── -->
+<! GRID DE PELÍCULAS >
 <main class="contenedor-peliculas">
     <?php
-    // mysqli_num_rows() cuenta cuántas filas devolvió la consulta
     if (mysqli_num_rows($resultado) > 0):
-        // El while recorre fila por fila hasta que no haya más
         while ($row = mysqli_fetch_assoc($resultado)):
     ?>
         <div class="pelicula-card">
-            <!-- Imagen de portada. Si falla la carga, muestra el placeholder -->
             <img src="<?php echo htmlspecialchars($row['portada']); ?>"
                  alt="<?php echo htmlspecialchars($row['titulo']); ?>"
                  onerror="this.src='img/placeholder.png'">
@@ -444,7 +411,7 @@ if (isset($_GET['editar_id'])) {
                 <div class="anio"><?php echo $row['anio']; ?></div>
             </div>
 
-            <!-- ── BOTONES CRUD (aparecen en hover) ────────── -->
+            <! BOTONES CRUD >
             <div class="crud-btns">
                 <!-- Editar: pasa los datos de esta película al modal de edición -->
                 <button class="btn-editar" onclick="abrirModalEditar(
@@ -456,7 +423,7 @@ if (isset($_GET['editar_id'])) {
                     <?php echo json_encode($row['portada']); ?>
                 )">✏️ Editar</button>
 
-                <!-- Eliminar: pide confirmación antes de enviar el formulario -->
+                <! Para eliminar se pide confirmación antes de enviar el formulario >
                 <button class="btn-eliminar" onclick="confirmarEliminar(
                     <?php echo $row['id']; ?>,
                     <?php echo json_encode($row['titulo']); ?>
@@ -473,21 +440,11 @@ if (isset($_GET['editar_id'])) {
     <?php endif; ?>
 </main>
 
-
-<!-- ═══════════════════════════════════════════════════════════
-     MODAL: AGREGAR nueva película (CREATE)
-     Este div está oculto por CSS. JS lo muestra/oculta.
-════════════════════════════════════════════════════════════ -->
 <div class="modal-overlay" id="modal-crear">
     <div class="modal">
         <button class="btn-cerrar" onclick="cerrarModal('modal-crear')">×</button>
         <h2>➕ Agregar título</h2>
 
-        <!--
-            action="" = envía al mismo archivo (menu.php)
-            El campo oculto "accion" le dice al PHP qué operación hacer.
-            Los campos ocultos (type="hidden") no se ven pero sí se envían.
-        -->
         <form method="POST" action="menu.php">
             <input type="hidden" name="accion" value="crear">
 
@@ -534,12 +491,6 @@ if (isset($_GET['editar_id'])) {
     </div>
 </div>
 
-
-<!-- ═══════════════════════════════════════════════════════════
-     MODAL: EDITAR película existente (UPDATE)
-     Los campos se pre-llenan con JavaScript cuando el usuario
-     hace clic en "Editar" en una tarjeta.
-════════════════════════════════════════════════════════════ -->
 <div class="modal-overlay" id="modal-editar">
     <div class="modal">
         <button class="btn-cerrar" onclick="cerrarModal('modal-editar')">×</button>
@@ -593,37 +544,21 @@ if (isset($_GET['editar_id'])) {
 </div>
 
 
-<!-- ═══════════════════════════════════════════════════════════
-     FORMULARIO OCULTO: ELIMINAR (DELETE)
-     No tiene interfaz visual. JavaScript lo rellena y envía.
-     Así evitamos usar GET con el id en la URL (más seguro).
-════════════════════════════════════════════════════════════ -->
 <form method="POST" action="menu.php" id="form-eliminar" style="display:none">
     <input type="hidden" name="accion" value="eliminar">
     <input type="hidden" name="id"     id="eliminar-id">
 </form>
 
 
-<!-- ── JAVASCRIPT DEL MENÚ ──────────────────────────────── -->
+<! JAVASCRIPT DEL MENÚ >
 <script>
-// ============================================================
-// Funciones para abrir y cerrar los modales
-// ============================================================
 
-/**
- * Abre el modal de CREAR (vacío, listo para llenar).
- */
 function abrirModalCrear() {
     // Obtenemos el elemento por su id y le añadimos la clase 'activo'.
     // El CSS tiene: .modal-overlay.activo { display: flex; }
     document.getElementById('modal-crear').classList.add('activo');
 }
 
-/**
- * Abre el modal de EDITAR y pre-llena los campos con los datos
- * de la película seleccionada.
- * Los parámetros vienen del onclick en cada tarjeta.
- */
 function abrirModalEditar(id, titulo, descripcion, genero, anio, portada) {
     // Ponemos los valores en cada campo del formulario de edición
     document.getElementById('editar-id').value          = id;
@@ -632,8 +567,6 @@ function abrirModalEditar(id, titulo, descripcion, genero, anio, portada) {
     document.getElementById('editar-anio').value        = anio;
     document.getElementById('editar-portada').value     = portada;
 
-    // Para el <select> de género necesitamos recorrer sus opciones
-    // y seleccionar la que coincida con el género actual
     const selectGenero = document.getElementById('editar-genero');
     for (let option of selectGenero.options) {
         if (option.value === genero) {
@@ -642,7 +575,6 @@ function abrirModalEditar(id, titulo, descripcion, genero, anio, portada) {
         }
     }
 
-    // Mostramos la preview de la portada si hay URL
     const prevImg = document.getElementById('prev-editar');
     if (portada && portada !== 'img/placeholder.png') {
         prevImg.src   = portada;
@@ -654,33 +586,17 @@ function abrirModalEditar(id, titulo, descripcion, genero, anio, portada) {
     document.getElementById('modal-editar').classList.add('activo');
 }
 
-/**
- * Cierra cualquier modal quitando la clase 'activo'.
- * @param {string} idModal - El id del div del modal a cerrar
- */
 function cerrarModal(idModal) {
     document.getElementById(idModal).classList.remove('activo');
 }
 
-/**
- * Pide confirmación al usuario antes de eliminar.
- * Si confirma, rellena y envía el formulario oculto.
- */
 function confirmarEliminar(id, titulo) {
-    // confirm() muestra un cuadro de diálogo con Aceptar/Cancelar.
-    // Devuelve true si el usuario hace clic en Aceptar.
     if (confirm(`¿Estás seguro de eliminar "${titulo}"?\nEsta acción no se puede deshacer.`)) {
         document.getElementById('eliminar-id').value = id;
-        // submit() envía el formulario programáticamente
         document.getElementById('form-eliminar').submit();
     }
 }
 
-/**
- * Muestra una preview de la imagen cuando el usuario escribe la URL.
- * @param {HTMLInputElement} input - El campo de texto donde se escribe la URL
- * @param {string} previewId       - El id del <img> de preview
- */
 function previsualizarPortada(input, previewId) {
     const img = document.getElementById(previewId);
     const url = input.value.trim();
@@ -688,7 +604,6 @@ function previsualizarPortada(input, previewId) {
     if (url !== '') {
         img.src   = url;
         img.style.display = 'block';
-        // Si la imagen no carga (URL inválida), ocultamos el preview
         img.onerror = () => { img.style.display = 'none'; };
         img.onload  = () => { img.style.display = 'block'; };
     } else {
@@ -696,11 +611,8 @@ function previsualizarPortada(input, previewId) {
     }
 }
 
-// Cerrar modal si el usuario hace clic FUERA del cuadro blanco
 document.querySelectorAll('.modal-overlay').forEach(overlay => {
     overlay.addEventListener('click', function(e) {
-        // e.target es el elemento exacto que recibió el clic.
-        // Si es el overlay (el fondo oscuro) y no el modal interior, cerramos.
         if (e.target === this) {
             this.classList.remove('activo');
         }
