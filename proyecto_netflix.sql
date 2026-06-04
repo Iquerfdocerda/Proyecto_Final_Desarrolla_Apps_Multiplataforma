@@ -1,6 +1,4 @@
--- ============================================================
--- Base de datos: proyecto_netflix  (versión corregida 1.3)
--- ============================================================
+--Base de datos: proyecto_netflix  (versión corregida 1.3)
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -14,13 +12,6 @@ CREATE DATABASE IF NOT EXISTS `proyecto_netflix`
 
 USE `proyecto_netflix`;
 
--- ============================================================
--- TABLA: Cuentas
--- BUG CORREGIDO: La versión original solo tenía 3 columnas
--- (Usuario_id, Usuario, Contrasena) pero el PHP buscaba
--- id, nombre, apellido, email, edad, password.
--- Ahora la tabla tiene TODAS las columnas que el PHP necesita.
--- ============================================================
 DROP TABLE IF EXISTS `Cuentas`;
 CREATE TABLE `Cuentas` (
   `id`        INT(11)      NOT NULL AUTO_INCREMENT,
@@ -35,13 +26,6 @@ CREATE TABLE `Cuentas` (
   UNIQUE KEY `email`   (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- ============================================================
--- TABLA: peliculas
--- BUG CORREGIDO: Esta tabla NO existía en el SQL original,
--- pero menu.php hacía SELECT * FROM peliculas.
--- Se agrega con los campos: id, titulo, descripcion,
--- genero, anio, portada.
--- ============================================================
 DROP TABLE IF EXISTS `peliculas`;
 CREATE TABLE `peliculas` (
   `id`          INT(11)      NOT NULL AUTO_INCREMENT,
@@ -53,10 +37,7 @@ CREATE TABLE `peliculas` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- ============================================================
--- DATOS DE EJEMPLO: 10 películas/series para el catálogo
--- Las portadas usan URLs de imágenes públicas de TMDB/IMDB.
--- ============================================================
+--Inserciones basicas para que no este vacio el catalogo
 INSERT INTO `peliculas` (`titulo`, `descripcion`, `genero`, `anio`, `portada`) VALUES
 ('Stranger Things',      'Un grupo de niños descubre misterios sobrenaturales en su pueblo.',          'Ciencia ficción', 2016, 'https://image.tmdb.org/t/p/w500/49WJfeN0moxb9IPfGn8AIqMGskD.jpg'),
 ('Breaking Bad',         'Un profesor de química se convierte en fabricante de metanfetamina.',         'Drama',           2008, 'https://image.tmdb.org/t/p/w500/ggFHVNu6YYI5L9pCfOacjizRGt.jpg'),
