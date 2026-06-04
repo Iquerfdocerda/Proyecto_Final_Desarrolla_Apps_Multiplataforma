@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Netflix - Iniciar sesión</title>
     <link rel="stylesheet" href="style.css">
 </head>
+    
 <body>
     <div class="login-container">
         <h1 class="logo">NETFLIX</h1>
@@ -13,10 +15,8 @@
         <form id="loginForm" action="login_process.php" method="POST">
             <label for="username">Nombre de Usuario:</label>
             <input type="text" id="username" name="usuario_input" placeholder="Tu usuario" required>
-
             <label for="password">Contraseña:</label>
             <input type="password" id="password" name="password" placeholder="Tu contraseña" required>
-
             <button type="submit" class="btn-login">Iniciar Sesión</button>
         </form>
 
@@ -25,11 +25,6 @@
         </div>
     </div>
 
-    <!--
-        BUG CORREGIDO: La versión original llamaba a "script.js"
-        pero el archivo real se llama "javascript.js".
-        Eso hacía que el JS del login nunca se ejecutara.
-    -->
     <script src="javascript.js"></script>
 </body>
 </html>
