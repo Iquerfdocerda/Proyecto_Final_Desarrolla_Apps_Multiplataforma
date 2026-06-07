@@ -1,10 +1,4 @@
-/* ============================================================
-   style.css — Estilos para index.html y registro.html
-   BUG CORREGIDO: Al bloque .secondary-text le faltaba el }
-   de cierre, lo que "atrapaba" todo el CSS que venía después
-   y hacía que .login-container e input[type="number"]
-   no funcionaran correctamente.
-   ============================================================ */
+/* style.css: Estilos para index.html y registro.html */
 
 body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -77,16 +71,12 @@ input:focus {
     background-color: #b9090b;
 }
 
-/* ============================================================
-   BUG CORREGIDO: Este bloque estaba sin el } de cierre,
-   lo que rompía todos los estilos que venían después.
-   ============================================================ */
 .secondary-text {
     color: #737373;
     text-align: center;
     margin-top: 20px;
     font-size: 14px;
-}   /* ← Esta llave faltaba en la versión original */
+}   
 
 .secondary-text a {
     color: #fff;
