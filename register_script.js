@@ -1,6 +1,5 @@
-// ============================================================
-// register_script.js — Validación del formulario de Registro
-// ============================================================
+
+// register_script.js: Validación del formulario de registro
 
 document.addEventListener('DOMContentLoaded', function() {
 
@@ -10,8 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const pass     = document.getElementById('pass').value;
         const confPass = document.getElementById('conf_pass').value;
 
-        // Verificamos que las dos contraseñas sean iguales
-        // ANTES de enviar el formulario al servidor.
+        // Verificamos que las dos contraseñas sean iguales antes de enviar el formulario 
         // e.preventDefault() cancela el envío si no coinciden.
         if (pass !== confPass) {
             e.preventDefault();
@@ -19,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Validamos longitud mínima de contraseña
+        // se valida longitud mínima de contraseña
         if (pass.length < 6) {
             e.preventDefault();
             alert('La contraseña debe tener al menos 6 caracteres.');
