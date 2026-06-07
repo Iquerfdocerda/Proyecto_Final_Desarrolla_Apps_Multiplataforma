@@ -1,10 +1,10 @@
 !!
-  NETFLIX — Proyecto Final v1.3 
+  NETFLIX — Proyecto Final Netflix
 !!
 
 REQUISITOS:
 
-- XAMPP (o cualquier servidor con Apache + PHP + MySQL)
+- XAMPP
 - PHP 7.4 o superior
 - MySQL 5.7 o superior
 
@@ -18,10 +18,9 @@ INSTALACIÓN PASO A PASO:
       http://localhost/phpmyadmin
 
 3. Crea la base de datos:
-   - Clic en "Nueva" (panel izquierdo)
+   - Clic en "Nueva"
    - Nombre: proyecto_netflix
-   - Clic en "Importar" → sube el archivo "proyecto_netflix.sql"
-   - Esto crea las tablas y agrega 10 películas de ejemplo.
+   - Clic en "Importar" y sube el archivo: "proyecto_netflix.sql"
 
 4. Abre en el navegador:
       http://localhost/netflix/index.html
@@ -32,36 +31,33 @@ INSTALACIÓN PASO A PASO:
 CRUD de Películas
 !!
 
-Desde el catálogo (menu.php) el usuario puede:
+Desde el catálogo (menú.php) el usuario puede:
 
-  ➕ AGREGAR  → Botón "Agregar título" (esquina superior derecha)
-                Campos: Título, Descripción, Género, Año, Portada (URL)
+  ➕ AGREGAR: poniendo título. descripción, una URL de imagen o si se queda en blanco se usa una imagen provisional.
 
-  ✏️  EDITAR   → Pasar el mouse sobre cualquier tarjeta → botón verde
-                Los campos se pre-llenan con los datos actuales.
+  ✏️  EDITAR: para poder editar los datos anteriores de cualquier película/serie que esté ahí.
 
-  🗑️  ELIMINAR → Pasar el mouse sobre cualquier tarjeta → botón rojo
-                Pide confirmación antes de borrar.
+  🗑️  ELIMINAR: para eliminar cualquier película/serie y pide una confirmación antes de borrar.
 
-  🔍 BUSCAR   → Barra de búsqueda en el header (busca por título)
+  🔍 BUSCAR: busca por título y si no se busca nada pone las agregadas recientemente primero.
 
 !!
 ESTRUCTURA DE ARCHIVOS
 !!
 
 netflix/
-├── index.html          ← Pantalla de login
-├── registro.html       ← Pantalla de registro
-├── menu.php            ← Catálogo principal + CRUD
-├── login_process.php   ← Lógica de autenticación
-├── register_process.php← Lógica de registro
-├── logout.php          ← Cierra sesión
-├── conexion.php        ← Conexión a MySQL
-├── javascript.js       ← Validación del login
-├── register_script.js  ← Validación del registro
-├── style.css           ← Estilos de login/registro
-├── menu_style.css      ← Estilos extra del catálogo
-├── proyecto_netflix.sql← Base de datos completa
-├── fondo.jpg           ← Imagen de fondo del login
+├── index.html: Pantalla de login
+├── registro.html: Pantalla de registro
+├── menu.php: Catálogo principal y el CRUD
+├── login_process.php: Lógica de autenticación
+├── register_process.php: Lógica de registro
+├── logout.php: Cierra sesión
+├── conexion.php: Conexión a MySQL
+├── javascript.js: Validación del login
+├── register_script.js: Validación del registro
+├── style.css: Estilos de login/registro
+├── menu_style.css: Estilos extra del catálogo
+├── proyecto_netflix.sql: Base de datos
+├── fondo.jpg: Imagen de fondo del login
 └── img/
-    └── placeholder.png ← Imagen cuando no hay portada
+    └── placeholder.png: Imagen cuando no hay portada
