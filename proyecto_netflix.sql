@@ -1,11 +1,8 @@
---Base de datos: proyecto_netflix  (versión corregida 1.3)
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 SET NAMES utf8mb4;
 
--- Crear la base de datos si no existe
 CREATE DATABASE IF NOT EXISTS `proyecto_netflix`
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
@@ -37,7 +34,6 @@ CREATE TABLE `peliculas` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---Inserciones basicas para que no este vacio el catalogo
 INSERT INTO `peliculas` (`titulo`, `descripcion`, `genero`, `anio`, `portada`) VALUES
 ('Stranger Things',      'Un grupo de niños descubre misterios sobrenaturales en su pueblo.',          'Ciencia ficción', 2016, 'https://image.tmdb.org/t/p/w500/49WJfeN0moxb9IPfGn8AIqMGskD.jpg'),
 ('Breaking Bad',         'Un profesor de química se convierte en fabricante de metanfetamina.',         'Drama',           2008, 'https://image.tmdb.org/t/p/w500/ggFHVNu6YYI5L9pCfOacjizRGt.jpg'),
