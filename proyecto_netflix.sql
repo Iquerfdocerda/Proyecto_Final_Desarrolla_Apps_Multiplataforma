@@ -18,6 +18,7 @@ CREATE TABLE `Cuentas` (
   `edad`      INT(3)       NOT NULL,
   `email`     VARCHAR(100) NOT NULL,
   `password`  VARCHAR(255) NOT NULL,
+  `rol`       ENUM('admin','usuario') NOT NULL DEFAULT 'usuario',
   PRIMARY KEY (`id`),
   UNIQUE KEY `usuario` (`usuario`),
   UNIQUE KEY `email`   (`email`)
