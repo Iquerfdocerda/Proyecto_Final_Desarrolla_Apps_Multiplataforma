@@ -50,6 +50,7 @@ netflix/
 ├── registro.html: Pantalla de registro
 ├── menu.php: Catálogo principal y el CRUD
 ├── login_process.php: Lógica de autenticación
+├── admin_usuarios.php: Manejar el CRUD de usuarios
 ├── register_process.php: Lógica de registro
 ├── logout.php: Cierra sesión
 ├── conexion.php: Conexión a MySQL
